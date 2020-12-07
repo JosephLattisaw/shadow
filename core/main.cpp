@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         qDebug() << "usage: There must be at least one option set, application_name, application_ports or application_scripts";
     }
 
-    Shadow w;
+    Shadow w(application_names, application_scripts, application_ports);
 
     return app.exec();
 }
