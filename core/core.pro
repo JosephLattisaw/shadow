@@ -29,7 +29,8 @@ SOURCES += \
         shadow.cpp
 
 HEADERS += \
-        shadow.h
+        shadow.h \
+    defines.hpp
 
 FORMS += \
         shadow.ui
