@@ -1,22 +1,15 @@
 #ifndef SHADOW_H
 #define SHADOW_H
 
-#include <QMainWindow>
+#include <QObject>
 
-namespace Ui {
-class Shadow;
-}
-
-class Shadow : public QMainWindow
+class Shadow : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Shadow(QWidget *parent = nullptr);
+    explicit Shadow(QObject *parent = nullptr);
     ~Shadow();
-
-private:
-    Ui::Shadow *ui;
 };
 
 #endif // SHADOW_H

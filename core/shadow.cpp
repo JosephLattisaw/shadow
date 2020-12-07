@@ -1,14 +1,6 @@
 #include "shadow.h"
-#include "ui_shadow.h"
 
-Shadow::Shadow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::Shadow)
+Shadow::Shadow(QObject *parent) :
+    QObject (parent)
 {
-    ui->setupUi(this);
-}
-
-Shadow::~Shadow()
-{
-    delete ui;
 }
