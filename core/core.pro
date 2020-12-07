@@ -26,11 +26,13 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        shadow.cpp
+        shadow.cpp \
+    process.cpp
 
 HEADERS += \
         shadow.h \
-    defines.hpp
+    defines.hpp \
+    process.h
 
 FORMS +=
 
