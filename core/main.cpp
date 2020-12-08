@@ -16,27 +16,16 @@ int main(int argc, char *argv[])
     parser.addHelpOption(); //adding default help option
     parser.addVersionOption(); //adding default version option
 
-    QCommandLineOption script_path(QStringList() << "script_path",
-                                QCoreApplication::translate("script_path", "path for script files"),
-                                QCoreApplication::translate("script_path", "path"));
-
-
-    QCommandLineOption default_vm_name(QStringList() << "default_vm_name",
-                                QCoreApplication::translate("default_vm_name", "default VM name for starting simulator"),
-                                QCoreApplication::translate("default_vm_name", "name"));
-
     QCommandLineOption application_name(QStringList() << "a" << "application_name",
-                                  "application name for a program to be automatically executed", "name");
+                                  "application name for a program to be automatically executed", "app_name");
 
     QCommandLineOption application_port(QStringList() << "p" << "application_port",
-                                  "TCP port to communicate with external application", "port");
+                                  "TCP port to communicate with external application", "app_port");
 
     QCommandLineOption application_script(QStringList() << "s" << "application_script",
-                                  "script needed to execute application", "path");
+                                  "script needed to execute application", "app_script");
 
     const QList<QCommandLineOption> command_line_options = {
-        script_path,
-        default_vm_name,
         application_name,
         application_port,
         application_script
@@ -47,8 +36,6 @@ int main(int argc, char *argv[])
     parser.process(app); //process command line arguments
 
     //getting all values of options
-    QString sp = QString(parser.value(script_path).toStdString().c_str());
-    QString vm_name = QString(parser.value(vm_name).toStdString().c_str());
     QStringList application_names = parser.values(application_name);
     QStringList application_ports = parser.values(application_port);
     QStringList application_scripts = parser.values(application_script);
@@ -72,6 +59,7 @@ int main(int argc, char *argv[])
     //Need at least one legal option for the application even to be doing anything
     if(length_of_legal_option < 1) {
         qDebug() << "usage: There must be at least one option set, application_name, application_ports or application_scripts";
+        std::exit(EXIT_FAILURE);
     }
 
     Shadow w(application_names, application_scripts, application_ports);
