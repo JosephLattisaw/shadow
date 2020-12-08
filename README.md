@@ -1,6 +1,9 @@
 # shadow
 Core
 [x] Add command line options that allow program to run other programs
+[ ] Run applications externally after being commanded
+[ ] Run applications in separate threads created dynamically
+[ ] Destroy applications via separate threads dynamically
 [ ] Create Application that runs as service
 [ ] Make sure service keeps running even if crash
 [ ] Run Applications with TCP commanding packets which let us know if application has crashed or not
