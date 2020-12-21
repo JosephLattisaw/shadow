@@ -62,6 +62,8 @@ int main(int argc, char *argv[])
         std::exit(EXIT_FAILURE);
     }
 
+    qDebug() << application_names << application_ports << application_scripts;
+
     Shadow w(application_names, application_scripts, application_ports);
 
     return app.exec();
