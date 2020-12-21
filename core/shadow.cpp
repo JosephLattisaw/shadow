@@ -1,11 +1,13 @@
 ﻿#include "shadow.h"
 #include <QThread>
+#include <cassert>
 
-Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QObject *parent) :
+Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, bool debug_window, QObject *parent) :
     QObject (parent),
     application_names(app_names),
     application_scripts(app_scripts),
-    application_ports(app_ports)
+    application_ports(app_ports),
+    debug_window_is_set(debug_window)
 {
     //sanity checks
     assert(app_names.length() > 0);
@@ -13,9 +15,20 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
 
     create_processes(); //creating all of our processes and threads
 
+    if(debug_window_is_set) {
+        _debug_window = new Debug_Window;
+        _debug_window->show();
+    }
+
     emit start_threads();
 
     emit start_process(0);
+}
+
+Shadow::~Shadow() {
+    //TODO need to kill threads
+
+    if(_debug_window != nullptr) delete _debug_window; //delete debug window gui if it exist
 }
 
 void Shadow::create_processes() {

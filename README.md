@@ -4,7 +4,8 @@ Core
 [x] Run applications externally after being commanded
 [x] Run applications in separate threads created dynamically
 [x] Destroy applications via separate threads dynamically
-[ ] Add Debugging GUI in order to Test Out GUI
+[x] Add Debugging GUI in order to Test Out GUI
+[ ] Add apps and statuses to debugging GUI
 [ ] Create Application that runs as service
 [ ] Make sure service keeps running even if crash
 [ ] Run Applications with TCP commanding packets which let us know if application has crashed or not

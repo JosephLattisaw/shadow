@@ -25,10 +25,14 @@ int main(int argc, char *argv[])
     QCommandLineOption application_script(QStringList() << "s" << "application_script",
                                   "script needed to execute application", "app_script");
 
+    QCommandLineOption debug_window(QStringList() << "debug_window",
+                                    "If this is set we display a debug window gui when running shadow");
+
     const QList<QCommandLineOption> command_line_options = {
         application_name,
         application_port,
-        application_script
+        application_script,
+        debug_window
     };
 
     //parser
@@ -62,7 +66,11 @@ int main(int argc, char *argv[])
         std::exit(EXIT_FAILURE);
     }
 
-    Shadow w(application_names, application_scripts, application_ports);
+    bool debug_window_set = parser.isSet(debug_window);
+
+    qDebug() << application_names << application_ports << application_scripts << debug_window_set;
+
+    Shadow w(application_names, application_scripts, application_ports, debug_window_set);
 
     return app.exec();
 }
