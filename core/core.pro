@@ -27,14 +27,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         shadow.cpp \
-    process.cpp
+    process.cpp \
+    debug_window.cpp
 
 HEADERS += \
         shadow.h \
     defines.hpp \
-    process.h
+    process.h \
+    debug_window.h
 
-FORMS +=
+FORMS += \
+    debug_window.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
