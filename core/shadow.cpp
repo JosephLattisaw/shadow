@@ -1,5 +1,6 @@
 ﻿#include "shadow.h"
 #include <QThread>
+#include <cassert>
 
 Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QObject *parent) :
     QObject (parent),
