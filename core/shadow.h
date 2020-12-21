@@ -4,13 +4,15 @@
 #include <QObject>
 #include <QVector>
 #include "process.h"
+#include "debug_window.h"
 
 class Shadow : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QObject *parent = nullptr);
+    explicit Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, bool debug_window = false, QObject *parent = nullptr);
+    ~Shadow();
 
 signals:
     void start_threads();
@@ -29,6 +31,9 @@ private:
     QStringList application_names;
     QStringList application_scripts;
     QStringList application_ports;
+
+    bool debug_window_is_set;
+    Debug_Window *_debug_window = nullptr;
 };
 
 #endif // SHADOW_H
