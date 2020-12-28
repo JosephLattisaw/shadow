@@ -13,10 +13,9 @@ Core
     [x] Make apps and statues non editable
     [x] Add start and stop button to kill or start applications
     [x] update dynamically if application is running
-    [ ] Add colors for statuses
+    [x] Add colors for statuses
 [ ] Create Application that runs as service
 [ ] Make sure service keeps running even if crash
-[ ] Run Applications with TCP commanding packets which let us know if application has crashed or not
 [ ] Create TCP portion which gives us updates to the status of an application
 [ ] Create Control in order to allow play / pause functionality to programs
 [ ] Add TCP Interface in order to connect GUI's to GUI

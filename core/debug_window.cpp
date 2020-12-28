@@ -61,15 +61,19 @@ void Debug_Window::set_process_status_table(QVector<shadow::APP_STATUS> statuses
             switch (process_statuses[i]) {
             case shadow::APP_STATUS::NOT_RUNNING:
                 status_item->setText(DEFAULT_STATUS_TEXT);
+                status_item->setBackgroundColor(Qt::white);
                 break;
             case shadow::APP_STATUS::CRASH:
                 status_item->setText(CRASHED_STATUS_TEXT);
+                status_item->setBackgroundColor(Qt::red);
                 break;
             case shadow::APP_STATUS::RUNNING:
                 status_item->setText(RUNNING_STATUS_TEXT);
+                status_item->setBackgroundColor(Qt::green);
                 break;
             case shadow::APP_STATUS::FAILED_TO_START:
                 status_item->setText(FAILED_TO_START_TEXT);
+                status_item->setBackgroundColor(QColor(255,131,0)); //color is orange
                 break;
             default:
                 assert(false);
