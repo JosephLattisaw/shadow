@@ -17,6 +17,8 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
 
     if(debug_window_is_set) {
         _debug_window = new Debug_Window;
+        _debug_window->set_application_names(application_names);
+
         _debug_window->show();
     }
 
