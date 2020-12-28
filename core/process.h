@@ -13,6 +13,8 @@ public:
 signals:
     void crashed(int id);
     void failed_to_start(int id);
+    void started(int id);
+    void stopped(int id);
 
 public slots:
     void start_thread();
@@ -23,6 +25,7 @@ private slots:
 
     void error_occurred(QProcess::ProcessError e);
     void process_finished(int exit_code);
+    void process_started();
 
 private:
     int _id;
