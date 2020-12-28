@@ -10,7 +10,7 @@ Core
     [x] Add Debugging GUI in order to Test Out GUI
 - GUI (Apps and statuses)
     [x] Add apps and statuses to debugging GUI
-    [ ] Make apps and statues non editable
+    [x] Make apps and statues non editable
 [ ] Create Application that runs as service
 [ ] Make sure service keeps running even if crash
 [ ] Run Applications with TCP commanding packets which let us know if application has crashed or not
