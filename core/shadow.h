@@ -5,6 +5,7 @@
 #include <QVector>
 #include "process.h"
 #include "debug_window.h"
+#include "defines.hpp"
 
 class Shadow : public QObject
 {
@@ -17,8 +18,23 @@ public:
 signals:
     void start_threads();
 
+    //signals to start and stop a process
     void start_process(int id);
     void stop_process(int id);
+
+    void update_process_status_table(QVector<shadow::APP_STATUS> statuses);
+
+private slots:
+    //signals from debug gui functions to start and stop processes
+    void start_all();
+    void stop_all();
+
+    //signals from process telling us the current state of our processes
+    void process_action_handler(int id, shadow::APP_STATUS status);
+    void process_crashed(int id);
+    void process_failed_to_start(int id);
+    void process_started(int id);
+    void process_stopped(int id);
 
 private:
     void create_processes();
@@ -26,6 +42,7 @@ private:
 
     QVector<Process*> processes;
     QVector<int> process_ids;
+    QVector<shadow::APP_STATUS> process_statuses;
     QVector<QThread*> threads;
 
     QStringList application_names;

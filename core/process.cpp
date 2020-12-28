@@ -11,11 +11,13 @@ void Process::start_thread() {
 
     connect(process, SIGNAL(finished(int)), this, SLOT(process_finished(int)));
     connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(error_occurred(QProcess::ProcessError)));
+    connect(process, SIGNAL(started()), this, SLOT(process_started()));
 }
 
 void Process::stop_process(int id) {
     if(_id == id) {
-        intentional_stop = false;
+        qDebug() << "stopping process:" << _name << "path:" << _script;
+        intentional_stop = true;
 
         //to avoid crash signal since programs don't always cleanly handle terminate/kill
         disconnect(process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(error_occurred(QProcess::ProcessError)));
@@ -40,6 +42,8 @@ void Process::start_process(int id) {
 
 void Process::process_finished(int exit_code) {
     qDebug() << "process finished with exit code" << exit_code;
+    if(!intentional_stop) emit crashed(_id); //assuming we crashed if it was closed not by us
+    else emit stopped(_id);
 }
 
 void Process::error_occurred(QProcess::ProcessError e) {
@@ -68,4 +72,7 @@ void Process::error_occurred(QProcess::ProcessError e) {
     }
 }
 
+void Process::process_started() {
+    emit started(_id);
+}
 
