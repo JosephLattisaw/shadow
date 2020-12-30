@@ -20,7 +20,7 @@ public slots:
     void start_thread();
 
 private slots:
-    void start_process(int id);
+    void start_process(int id, QString command_line_arguments);
     void stop_process(int id);
 
     void error_occurred(QProcess::ProcessError e);

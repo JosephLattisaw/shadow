@@ -13,7 +13,7 @@ class Debug_Window : public QMainWindow
     Q_OBJECT
 
 signals:
-    void start();
+    void start(QVector<QString> command_line_arguments);
     void stop();
 
 public:
@@ -31,16 +31,21 @@ private slots:
     void on_stop_button_clicked();
 
 private:
+    QVector<QString> get_command_line_arguments();
     void toggle_start_and_stop_buttons(bool start_clicked);
+    void toggle_cmd_line_arg_editable(bool editable);
 
     Ui::Debug_Window *ui;
 
     QStringList _app_names;
     QVector<shadow::APP_STATUS> process_statuses;
 
+    Qt::ItemFlags default_command_line_arg_flags = Qt::NoItemFlags;
+
     enum table {
         APPLICATION_NAME = 0,
         STATUS_NAME = 1,
+        COMMAND_LINE_ARGS = 2,
     };
 };
 

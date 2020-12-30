@@ -23,7 +23,7 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
 
         _debug_window->show();
 
-        connect(_debug_window, SIGNAL(start()), this, SLOT(start_all())); //starting all processes
+        connect(_debug_window, SIGNAL(start(QVector<QString>)), this, SLOT(start_all(QVector<QString>))); //starting all processes
         connect(_debug_window, SIGNAL(stop()), this, SLOT(stop_all())); //stopping all processes
         connect(this, SIGNAL(update_process_status_table(QVector<shadow::APP_STATUS>)), _debug_window, SLOT(set_process_status_table(QVector<shadow::APP_STATUS>)));
     }
@@ -47,7 +47,7 @@ void Shadow::create_processes() {
 
         move_object_to_thread(process, thread);
 
-        connect(this, SIGNAL(start_process(int)), process, SLOT(start_process(int)));
+        connect(this, SIGNAL(start_process(int,QString)), process, SLOT(start_process(int,QString)));
         connect(this, SIGNAL(stop_process(int)), process, SLOT(stop_process(int)));
         connect(process, SIGNAL(started(int)), this, SLOT(process_started(int)));
         connect(process, SIGNAL(failed_to_start(int)), this, SLOT(process_failed_to_start(int)));
@@ -68,8 +68,8 @@ void Shadow::move_object_to_thread(QObject *object, QThread *thread) {
     connect(thread, SIGNAL(finished()), object, SLOT(deleteLater()));
 }
 
-void Shadow::start_all() {
-    emit start_process(0);
+void Shadow::start_all(QVector<QString> command_line_arguments) {
+    emit start_process(0, command_line_arguments.at(0));
 }
 
 void Shadow::stop_all() {
