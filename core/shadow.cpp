@@ -25,11 +25,10 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
 
         connect(_debug_window, SIGNAL(start()), this, SLOT(start_all())); //starting all processes
         connect(_debug_window, SIGNAL(stop()), this, SLOT(stop_all())); //stopping all processes
+        connect(this, SIGNAL(update_process_status_table(QVector<shadow::APP_STATUS>)), _debug_window, SLOT(set_process_status_table(QVector<shadow::APP_STATUS>)));
     }
 
     emit start_threads();
-
-    connect(this, SIGNAL(update_process_status_table(QVector<shadow::APP_STATUS>)), _debug_window, SLOT(set_process_status_table(QVector<shadow::APP_STATUS>)));
 }
 
 Shadow::~Shadow() {
