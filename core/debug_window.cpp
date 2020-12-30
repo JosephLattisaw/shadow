@@ -28,10 +28,15 @@ void Debug_Window::set_application_names(QStringList app_names) {
     for(auto i:app_names) {
         QTableWidgetItem *app_name_item = new QTableWidgetItem(i);
         QTableWidgetItem *status_name_item = new QTableWidgetItem(DEFAULT_STATUS_TEXT);
+        QTableWidgetItem *command_line_args_item = new QTableWidgetItem();
+
+        app_name_item->setFlags(Qt::ItemIsEnabled);
+        status_name_item->setFlags(Qt::ItemIsEnabled);
 
         ui->table_widget->insertRow(ui->table_widget->rowCount());
         ui->table_widget->setItem(ui->table_widget->rowCount() - 1, APPLICATION_NAME, app_name_item);
         ui->table_widget->setItem(ui->table_widget->rowCount() - 1, STATUS_NAME, status_name_item);
+        ui->table_widget->setItem(ui->table_widget->rowCount() - 1, COMMAND_LINE_ARGS, command_line_args_item);
     }
 }
 

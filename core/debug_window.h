@@ -41,6 +41,7 @@ private:
     enum table {
         APPLICATION_NAME = 0,
         STATUS_NAME = 1,
+        COMMAND_LINE_ARGS = 2,
     };
 };
 
