@@ -31,12 +31,12 @@ void Process::stop_process(int id) {
     }
 }
 
-void Process::start_process(int id) {
+void Process::start_process(int id, QString command_line_arguments) {
     if(id == _id) {
         stop_process(_id);
 
-        log("starting process with script (" + _script + ")");
-        process->start(_script, QStringList()); //starting the process
+        log("starting process with script (" + _script + "), and command line args: [" + command_line_arguments + "]");
+        process->start(_script, QStringList() << command_line_arguments); //starting the process
     }
 }
 

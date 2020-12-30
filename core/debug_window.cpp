@@ -44,7 +44,7 @@ void Debug_Window::set_application_names(QStringList app_names) {
 void Debug_Window::on_start_button_clicked() {
     toggle_start_and_stop_buttons(true);
     toggle_cmd_line_arg_editable(false);
-    emit start();
+    emit start(get_command_line_arguments());
 }
 
 void Debug_Window::on_stop_button_clicked() {
@@ -66,6 +66,18 @@ void Debug_Window::toggle_cmd_line_arg_editable(bool editable) {
         if(editable) item->setFlags(default_command_line_arg_flags);
         else item->setFlags(Qt::ItemIsEnabled);
     }
+}
+
+QVector<QString> Debug_Window::get_command_line_arguments() {
+    QVector<QString> result;
+
+    for(auto i = 0; i < ui->table_widget->rowCount(); i++) {
+        QTableWidgetItem *item = ui->table_widget->item(i, COMMAND_LINE_ARGS);
+
+        result.push_back(item->text());
+    }
+
+    return result;
 }
 
 void Debug_Window::set_process_status_table(QVector<shadow::APP_STATUS> statuses) {
