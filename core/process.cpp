@@ -5,7 +5,7 @@ Process::Process(QString name, QString script, int id, QObject *parent) : _name(
 {}
 
 void Process::start_thread() {
-    qDebug() << "Process: <" << _name.toStdString().c_str() << "> thread started";
+    log("thread started");
     process = new QProcess(this);
     stopper_process = new QProcess(this);
 
@@ -16,7 +16,7 @@ void Process::start_thread() {
 
 void Process::stop_process(int id) {
     if(_id == id) {
-        qDebug() << "stopping process:" << _name << "path:" << _script;
+        log("stopping process with script (" + _script + ")");
         intentional_stop = true;
 
         //to avoid crash signal since programs don't always cleanly handle terminate/kill
@@ -35,13 +35,13 @@ void Process::start_process(int id) {
     if(id == _id) {
         stop_process(_id);
 
-        qDebug() << "starting process:" << _name << "path:" << _script;
+        log("starting process with script (" + _script + ")");
         process->start(_script, QStringList()); //starting the process
     }
 }
 
 void Process::process_finished(int exit_code) {
-    qDebug() << "process finished with exit code" << exit_code;
+    log("process finished with exit code " + QString::number(exit_code));
     if(!intentional_stop) emit crashed(_id); //assuming we crashed if it was closed not by us
     else emit stopped(_id);
 }
@@ -49,25 +49,25 @@ void Process::process_finished(int exit_code) {
 void Process::error_occurred(QProcess::ProcessError e) {
     switch(e) {
     case QProcess::FailedToStart:
-        qDebug() << _name << "failed to start";
+        log("ERROR OCCURRED => failed to start");
         emit failed_to_start(_id); //sending failed to start signal
         break;
     case QProcess::Crashed:
-        qDebug() << _name << "crashed";
+        log("ERROR OCCURRED => crashed");
         emit crashed(_id); //sending crashed signal
         break;
     case QProcess::Timedout:
-        qDebug() << _name << "last waitFor function timed out";
+        log("ERROR OCCURRED => process timed out");
         break;
     case QProcess::WriteError:
-        qDebug() << _name << "error occurred when attempting to write to process";
+        log("ERROR OCCURRED => error occurred when attempting to write to process");
         break;
     case QProcess::ReadError:
-        qDebug() << _name << "error occurred when attempting to read from process";
+        log("ERROR OCCURRED => error occurred when attempting to read from process");
         break;
     case QProcess::UnknownError:
     default:
-        qDebug() << _name << "unknown error occurred";
+        log("ERROR OCCURRED => unknow error occurred");
         break;
     }
 }
@@ -76,3 +76,6 @@ void Process::process_started() {
     emit started(_id);
 }
 
+void Process::log(QString string) {
+    qDebug() << QString("Process <" + _name + ">:").toStdString().c_str() << string.toStdString().c_str();
+}

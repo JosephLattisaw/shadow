@@ -28,6 +28,7 @@ private slots:
     void process_started();
 
 private:
+    void log(QString string);
     int _id;
     QString _name; //NOTE: name doesn't do anything, just helpful for printouts really
     QString _script; //what script we will actually be running
