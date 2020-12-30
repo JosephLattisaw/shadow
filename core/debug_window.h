@@ -32,11 +32,14 @@ private slots:
 
 private:
     void toggle_start_and_stop_buttons(bool start_clicked);
+    void toggle_cmd_line_arg_editable(bool editable);
 
     Ui::Debug_Window *ui;
 
     QStringList _app_names;
     QVector<shadow::APP_STATUS> process_statuses;
+
+    Qt::ItemFlags default_command_line_arg_flags = Qt::NoItemFlags;
 
     enum table {
         APPLICATION_NAME = 0,

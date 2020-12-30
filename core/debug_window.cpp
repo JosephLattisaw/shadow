@@ -32,6 +32,7 @@ void Debug_Window::set_application_names(QStringList app_names) {
 
         app_name_item->setFlags(Qt::ItemIsEnabled);
         status_name_item->setFlags(Qt::ItemIsEnabled);
+        default_command_line_arg_flags = command_line_args_item->flags(); //they should all be the same
 
         ui->table_widget->insertRow(ui->table_widget->rowCount());
         ui->table_widget->setItem(ui->table_widget->rowCount() - 1, APPLICATION_NAME, app_name_item);
@@ -42,11 +43,13 @@ void Debug_Window::set_application_names(QStringList app_names) {
 
 void Debug_Window::on_start_button_clicked() {
     toggle_start_and_stop_buttons(true);
+    toggle_cmd_line_arg_editable(false);
     emit start();
 }
 
 void Debug_Window::on_stop_button_clicked() {
     toggle_start_and_stop_buttons(false);
+    toggle_cmd_line_arg_editable(true);
     emit stop();
 }
 
@@ -54,6 +57,15 @@ void Debug_Window::toggle_start_and_stop_buttons(bool start_clicked) {
     //disabling the button you clicked or re-enabling the one you didn't click
     ui->start_button->setDisabled(start_clicked);
     ui->stop_button->setDisabled(!start_clicked);
+}
+
+void Debug_Window::toggle_cmd_line_arg_editable(bool editable) {
+    for(auto i = 0; i < ui->table_widget->rowCount(); i++) {
+        QTableWidgetItem *item = ui->table_widget->item(i, COMMAND_LINE_ARGS);
+
+        if(editable) item->setFlags(default_command_line_arg_flags);
+        else item->setFlags(Qt::ItemIsEnabled);
+    }
 }
 
 void Debug_Window::set_process_status_table(QVector<shadow::APP_STATUS> statuses) {
