@@ -20,8 +20,8 @@ Core
     [x] Add start and stop button to kill or start applications
     [x] update dynamically if application is running
     [x] Add colors for statuses
-    [ ] add ability to add command line arguments
-    [ ] remove focus from table items
+    [x] add ability to add command line arguments
+    [x] remove focus from table items
 - Services
     [ ] Create Application that runs as service
     [ ] Make sure service keeps running even if crash
