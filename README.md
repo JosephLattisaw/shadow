@@ -21,6 +21,7 @@ Core
     [x] update dynamically if application is running
     [x] Add colors for statuses
     [ ] add ability to add command line arguments
+    [ ] remove focus from table items
 - Services
     [ ] Create Application that runs as service
     [ ] Make sure service keeps running even if crash
