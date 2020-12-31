@@ -28,11 +28,23 @@ int main(int argc, char *argv[])
     QCommandLineOption debug_window(QStringList() << "debug_window",
                                     "If this is set we display a debug window gui when running shadow");
 
+    QCommandLineOption client_mode(QStringList() << "client_mode",
+                                   "run core in client mode (core running inside of VM)");
+
+    QCommandLineOption client_host(QStringList() << "client_host",
+                                   "TCP/IP Server IP Address (Needed for Client Mode)", "127.0.0.1");
+
+    QCommandLineOption client_port(QStringList() << "client_port",
+                                   "TCP/IP Port (Needed for Client and non - Client Mode)", "2000");
+
     const QList<QCommandLineOption> command_line_options = {
         application_name,
         application_port,
         application_script,
-        debug_window
+        debug_window,
+        client_mode,
+        client_host,
+        client_port
     };
 
     //parser
@@ -43,6 +55,8 @@ int main(int argc, char *argv[])
     QStringList application_names = parser.values(application_name);
     QStringList application_ports = parser.values(application_port);
     QStringList application_scripts = parser.values(application_script);
+    QString client_hostname = parser.value(client_host);
+    std::uint16_t client_port_number = parser.value(client_port).toUShort();
 
     //Need to make sure there are an equal amount of options for each. Basically a positional argument.
     //We are creating a table with these options and expect an equal number for each
@@ -67,10 +81,11 @@ int main(int argc, char *argv[])
     }
 
     bool debug_window_set = parser.isSet(debug_window);
+    bool client_mode_set = parser.isSet(client_mode);
 
     qDebug() << application_names << application_ports << application_scripts << debug_window_set;
 
-    Shadow w(application_names, application_scripts, application_ports, debug_window_set);
+    Shadow w(application_names, application_scripts, application_ports, client_hostname, client_port_number, client_mode_set, debug_window_set);
 
     return app.exec();
 }

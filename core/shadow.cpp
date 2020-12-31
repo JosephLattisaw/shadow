@@ -2,12 +2,15 @@
 #include <QThread>
 #include <cassert>
 
-Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, bool debug_window, QObject *parent) :
+Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QString client_hostname, uint16_t client_port, bool client_mode, bool debug_window, QObject *parent) :
     QObject (parent),
     application_names(app_names),
     application_scripts(app_scripts),
     application_ports(app_ports),
-    debug_window_is_set(debug_window)
+    debug_window_is_set(debug_window),
+    _client_hostname(client_hostname),
+    _client_port(client_port),
+    _client_mode(client_mode)
 {
     //sanity checks
     assert(app_names.length() > 0);
