@@ -37,6 +37,11 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
         core_server_thread = new QThread;
         move_object_to_thread(core_server, core_server_thread);
     }
+    else {
+        core_client = new Core_Client(_client_hostname, _client_port);
+        core_client_thread = new QThread;
+        move_object_to_thread(core_client, core_client_thread);
+    }
 
     emit start_threads();
 }

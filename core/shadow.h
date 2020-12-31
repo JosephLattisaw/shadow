@@ -7,6 +7,7 @@
 #include "debug_window.h"
 #include "defines.hpp"
 #include "core_server.h"
+#include "core_client.h"
 
 class Shadow : public QObject
 {
@@ -60,6 +61,9 @@ private:
 
     Core_Server *core_server = nullptr;
     QThread *core_server_thread = nullptr;
+
+    Core_Client *core_client = nullptr;
+    QThread *core_client_thread = nullptr;
 };
 
 #endif // SHADOW_H

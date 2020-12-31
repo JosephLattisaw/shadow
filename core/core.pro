@@ -29,14 +29,16 @@ SOURCES += \
         shadow.cpp \
     process.cpp \
     debug_window.cpp \
-    core_server.cpp
+    core_server.cpp \
+    core_client.cpp
 
 HEADERS += \
         shadow.h \
     defines.hpp \
     process.h \
     debug_window.h \
-    core_server.h
+    core_server.h \
+    core_client.h
 
 FORMS += \
     debug_window.ui
