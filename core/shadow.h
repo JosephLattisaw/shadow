@@ -6,6 +6,7 @@
 #include "process.h"
 #include "debug_window.h"
 #include "defines.hpp"
+#include "core_server.h"
 
 class Shadow : public QObject
 {
@@ -56,6 +57,9 @@ private:
 
     bool debug_window_is_set;
     Debug_Window *_debug_window = nullptr;
+
+    Core_Server *core_server = nullptr;
+    QThread *core_server_thread = nullptr;
 };
 
 #endif // SHADOW_H

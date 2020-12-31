@@ -37,6 +37,7 @@ private:
     QProcess *stopper_process = nullptr;
 
     bool intentional_stop = false;
+    bool thread_started = true;
 };
 
 #endif // PROCESS_H

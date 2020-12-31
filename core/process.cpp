@@ -5,6 +5,8 @@ Process::Process(QString name, QString script, int id, QObject *parent) : _name(
 {}
 
 void Process::start_thread() {
+    assert(!thread_started);
+    thread_started = true;
     log("thread started");
     process = new QProcess(this);
     stopper_process = new QProcess(this);

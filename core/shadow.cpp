@@ -31,6 +31,13 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
         connect(this, SIGNAL(update_process_status_table(QVector<shadow::APP_STATUS>)), _debug_window, SLOT(set_process_status_table(QVector<shadow::APP_STATUS>)));
     }
 
+    if(!client_mode) {
+        //created a server if we aren't in client mode
+        core_server = new Core_Server(_client_port);
+        core_server_thread = new QThread;
+        move_object_to_thread(core_server, core_server_thread);
+    }
+
     emit start_threads();
 }
 
