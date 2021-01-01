@@ -36,7 +36,7 @@ Core
     [x] Add command line options to set client hostname and port
     [x] Need to create a server which the client can talk to
     [x] Need to create a client which the server can talk to
-    [ ] Need to create protocol to share information over the client/server
-    [ ] Create keep alive for connecting between servers
+    [x] Create keep alive for connecting between servers
+    [x] Need to create protocol to share information over the client/server
     [ ] always be ready to reconnect and kick last guy off the server/socket connection
     [ ] only one connection should be allowed

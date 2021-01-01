@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QTimer>
 
 class Core_Server : public QObject
 {
@@ -21,6 +22,9 @@ private slots:
     void new_connection();
     void ready_read();
 
+    void keep_alive_send_timeout();
+    void keep_alive_receive_timeout();
+
 private:
     void clear_buffers();
     void close_socket();
@@ -31,6 +35,12 @@ private:
 
     bool thread_started = false;
     std::uint16_t _port;
+
+    QTimer *keep_alive_send_timer;
+    QTimer *keep_alive_receive_timer;
+
+    QByteArray header_buffer;
+    QByteArray data_buffer;
 };
 
 #endif // Core_Server_H

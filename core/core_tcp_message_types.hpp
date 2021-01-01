@@ -9,6 +9,7 @@ struct header {
         KEEP_ALIVE = 0,
     };
 
+    std::uint32_t message_type;
     std::uint32_t packet_size = 0; //bytes
 };
 

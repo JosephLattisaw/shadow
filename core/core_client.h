@@ -23,9 +23,15 @@ private slots:
     void disconnected();
     void ready_read();
 
-     void connect_to_server();
+    void connect_to_server();
+    void disconnect_from_server();
+
+    void keep_alive_timeout();
 
 private:
+    void clear_buffers();
+    void send_keep_alive_packet();
+
     bool thread_started = false;
     QTcpSocket *socket = nullptr;
 
@@ -33,6 +39,11 @@ private:
 
     QString _hostname;
     std::uint16_t _port;
+
+    QTimer *keep_alive_timer;
+
+    QByteArray header_buffer;
+    QByteArray data_buffer;
 };
 
 #endif // CORE_CLIENT_H
