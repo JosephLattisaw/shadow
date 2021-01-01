@@ -15,6 +15,9 @@ signals:
     void connected_alert();
     void disconnected_alert();
 
+    void start_all();
+    void stop_all();
+
 public slots:
     void start_thread();
 

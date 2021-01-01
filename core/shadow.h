@@ -24,12 +24,17 @@ signals:
     void start_process(int id, QString command_line_arguments);
     void stop_process(int id);
 
+    void start_client_processes();
+    void stop_client_processes();
+
     void update_process_status_table(QVector<shadow::APP_STATUS> statuses);
 
 private slots:
     //signals from debug gui functions to start and stop processes
     void start_all(QVector<QString> command_line_arguments);
+    void start_all();
     void stop_all();
+    void client_stop_all();
 
     //signals from process telling us the current state of our processes
     void process_action_handler(int id, shadow::APP_STATUS status);

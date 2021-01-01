@@ -36,11 +36,15 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
         core_server = new Core_Server(_client_port);
         core_server_thread = new QThread;
         move_object_to_thread(core_server, core_server_thread);
+        connect(this, SIGNAL(start_client_processes()), core_server, SLOT(start_client_processes()));
+        connect(this, SIGNAL(stop_client_processes()), core_server, SLOT(stop_client_processes()));
     }
     else {
         core_client = new Core_Client(_client_hostname, _client_port);
         core_client_thread = new QThread;
         move_object_to_thread(core_client, core_client_thread);
+        connect(core_client, SIGNAL(start_all()), this, SLOT(start_all()));
+        connect(core_client, SIGNAL(stop_all()), this, SLOT(client_stop_all()));
     }
 
     emit start_threads();
@@ -85,6 +89,20 @@ void Shadow::move_object_to_thread(QObject *object, QThread *thread) {
 
 void Shadow::start_all(QVector<QString> command_line_arguments) {
     emit start_process(0, command_line_arguments.at(0));
+    emit start_client_processes();
+}
+
+void Shadow::start_all() {
+    emit start_process(0, "");
+}
+
+void Shadow::client_stop_all() {
+    emit stop_process(0);
+    for(auto i = 0; i < process_statuses.size(); i++) {
+        process_statuses[i] = shadow::APP_STATUS::NOT_RUNNING; //resetting to default status
+    }
+
+    update_process_status_table(process_statuses);
 }
 
 void Shadow::stop_all() {
@@ -94,6 +112,7 @@ void Shadow::stop_all() {
     }
 
     update_process_status_table(process_statuses);
+    emit stop_client_processes();
 }
 
 void Shadow::process_started(int id) {

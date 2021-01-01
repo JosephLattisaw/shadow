@@ -2,9 +2,9 @@
 #include "core_tcp_message_types.hpp"
 
 namespace  {
-    const int SERVER_CONNECTION_TIMEOUT_MSECS = 10000;
-    const int SERVER_ATTEMPT_TO_RECONNECT_TIMEOUT_MSECS = 1000;
-    const int SERVER_KEEP_ALIVE_TIMEOUT_MSECS = 20000;
+const int SERVER_CONNECTION_TIMEOUT_MSECS = 10000;
+const int SERVER_ATTEMPT_TO_RECONNECT_TIMEOUT_MSECS = 1000;
+const int SERVER_KEEP_ALIVE_TIMEOUT_MSECS = 20000;
 }
 
 Core_Client::Core_Client(QString hostname, uint16_t port, QObject *parent)
@@ -59,10 +59,16 @@ void Core_Client::ready_read() {
 
             if(hdr->packet_size == data_buffer.size()) {
                 switch (hdr->message_type) {
-                    case core::header::MESSAGE_TYPE::KEEP_ALIVE: //received keep alive packet
+                case core::header::MESSAGE_TYPE::KEEP_ALIVE: //received keep alive packet
                     keep_alive_timer->stop(); //stopping keep alive from timing out
                     send_keep_alive_packet(); //sending keep alive packet back to server
                     keep_alive_timer->start(SERVER_KEEP_ALIVE_TIMEOUT_MSECS); //restarting keep alive timer
+                    break;
+                case core::header::MESSAGE_TYPE::START:
+                    emit start_all();
+                    break;
+                case core::header::MESSAGE_TYPE::STOP:
+                    emit stop_all();
                     break;
                 default:
                     qDebug() << "received unknown packet type, kicking off server";

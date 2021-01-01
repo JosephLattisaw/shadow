@@ -5,6 +5,7 @@ Core
     [x] Add command line option for client mode
     [x] Add command line option to change client hostname
     [x] Add command line option to change client port
+    [ ] Add command line options for applications command line options
     [ ] Ability to check valid port numbers
     [ ] Ability to set no port (no port should be -1 option)
 - Main Functionality
@@ -25,6 +26,8 @@ Core
     [x] Add colors for statuses
     [x] add ability to add command line arguments
     [x] remove focus from table items
+    [ ] remove ability to add command line options 
+    [ ] reorganize signals to be more capable
 - Services
     [ ] Create Application that runs as service
     [ ] Make sure service keeps running even if crash
@@ -38,5 +41,6 @@ Core
     [x] Need to create a client which the server can talk to
     [x] Create keep alive for connecting between servers
     [x] Need to create protocol to share information over the client/server
+    [ ] Add ability for start / stop capability
     [ ] always be ready to reconnect and kick last guy off the server/socket connection
     [ ] only one connection should be allowed

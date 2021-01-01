@@ -7,6 +7,8 @@ namespace core {
 struct header {
     enum MESSAGE_TYPE {
         KEEP_ALIVE = 0,
+        START = 1,
+        STOP = 2,
     };
 
     std::uint32_t message_type;

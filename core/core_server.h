@@ -15,6 +15,9 @@ public:
 signals:
 
 public slots:
+    void start_client_processes();
+    void stop_client_processes();
+
     void start_thread();
 
 private slots:

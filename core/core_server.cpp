@@ -116,3 +116,19 @@ void Core_Server::keep_alive_receive_timeout() {
     qDebug() << "keep alive timeout, closing socket connection";
     close_socket();
 }
+
+void Core_Server::start_client_processes() {
+    if(socket != nullptr && socket->isOpen()) {
+        core::header header;
+        header.message_type = core::header::START;
+        socket->write(reinterpret_cast<char*>(&header), sizeof (header));
+    }
+}
+
+void Core_Server::stop_client_processes() {
+    if(socket != nullptr && socket->isOpen()) {
+        core::header header;
+        header.message_type = core::header::STOP;
+        socket->write(reinterpret_cast<char*>(&header), sizeof (header));
+    }
+}
