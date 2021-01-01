@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
                                    "run core in client mode (core running inside of VM)");
 
     QCommandLineOption client_host(QStringList() << "client_host",
-                                   "TCP/IP Server IP Address (Needed for Client Mode)", "127.0.0.1");
+                                   "TCP/IP Server IP Address (Needed for Client Mode)", "127.0.0.1", "127.0.0.1");
 
     QCommandLineOption client_port(QStringList() << "client_port",
-                                   "TCP/IP Port (Needed for Client and non - Client Mode)", "2000");
+                                   "TCP/IP Port (Needed for Client and non - Client Mode)", "2000", "2000");
 
     const QList<QCommandLineOption> command_line_options = {
         application_name,
@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
     QStringList application_names = parser.values(application_name);
     QStringList application_ports = parser.values(application_port);
     QStringList application_scripts = parser.values(application_script);
-    QString client_hostname = parser.value(client_host);
-    std::uint16_t client_port_number = parser.value(client_port).toUShort();
+    QString client_hostname = parser.isSet(client_host) ? parser.value(client_host) : client_host.defaultValues().first();
+    std::uint16_t client_port_number = parser.isSet(client_port) ? parser.value(client_port).toUShort() : client_port.defaultValues().first().toUShort();
 
     //Need to make sure there are an equal amount of options for each. Basically a positional argument.
     //We are creating a table with these options and expect an equal number for each
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     bool debug_window_set = parser.isSet(debug_window);
     bool client_mode_set = parser.isSet(client_mode);
 
-    qDebug() << application_names << application_ports << application_scripts << debug_window_set;
+    qDebug() << application_names << application_ports << application_scripts << client_hostname << client_port_number << client_mode_set << debug_window_set;
 
     Shadow w(application_names, application_scripts, application_ports, client_hostname, client_port_number, client_mode_set, debug_window_set);
 

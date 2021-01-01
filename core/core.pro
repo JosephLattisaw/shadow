@@ -38,7 +38,8 @@ HEADERS += \
     process.h \
     debug_window.h \
     core_server.h \
-    core_client.h
+    core_client.h \
+    core_tcp_message_types.hpp
 
 FORMS += \
     debug_window.ui

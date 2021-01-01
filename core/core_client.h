@@ -23,9 +23,9 @@ private slots:
     void disconnected();
     void ready_read();
 
-private:
-    void connect_to_server();
+     void connect_to_server();
 
+private:
     bool thread_started = false;
     QTcpSocket *socket = nullptr;
 

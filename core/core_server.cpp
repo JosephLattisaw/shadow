@@ -17,7 +17,7 @@ void Core_Server::start_thread() {
 
     //creating tcp/ip server
     server = new QTcpServer(this);
-    connect(server, SIGNAL(new_connection()), this, SLOT(new_connection()));
+    connect(server, SIGNAL(newConnection()), this, SLOT(new_connection()));
 
     listen_for_connections(); //start listening for connections
 }
@@ -42,9 +42,7 @@ void Core_Server::listen_for_connections() {
 }
 
 void Core_Server::clear_buffers() {
-    qDebug() << "socket was disconnected";
-    clear_buffers();
-    close_socket(); //calling this just in case and for socket object clean up
+    qDebug() << "clearing buffers";
 }
 
 void Core_Server::disconnected() {
