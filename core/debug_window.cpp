@@ -22,17 +22,19 @@ Debug_Window::~Debug_Window()
     delete ui;
 }
 
-void Debug_Window::set_application_names(QStringList app_names) {
+void Debug_Window::set_application_data(QStringList app_names, QStringList command_line_args) {
+    assert(app_names.size() == command_line_args.size()); //sanity check
     _app_names = app_names;
+    _command_line_arguments = command_line_args;
 
-    for(auto i:app_names) {
-        QTableWidgetItem *app_name_item = new QTableWidgetItem(i);
+    for(auto i = 0; i < app_names.size(); i++) {
+        QTableWidgetItem *app_name_item = new QTableWidgetItem(app_names[i]);
         QTableWidgetItem *status_name_item = new QTableWidgetItem(DEFAULT_STATUS_TEXT);
-        QTableWidgetItem *command_line_args_item = new QTableWidgetItem();
+        QTableWidgetItem *command_line_args_item = new QTableWidgetItem(command_line_args[i]);
 
         app_name_item->setFlags(Qt::ItemIsEnabled);
         status_name_item->setFlags(Qt::ItemIsEnabled);
-        default_command_line_arg_flags = command_line_args_item->flags(); //they should all be the same
+        command_line_args_item->setFlags(Qt::ItemIsEnabled);
 
         ui->table_widget->insertRow(ui->table_widget->rowCount());
         ui->table_widget->setItem(ui->table_widget->rowCount() - 1, APPLICATION_NAME, app_name_item);
@@ -43,13 +45,11 @@ void Debug_Window::set_application_names(QStringList app_names) {
 
 void Debug_Window::on_start_button_clicked() {
     toggle_start_and_stop_buttons(true);
-    toggle_cmd_line_arg_editable(false);
     emit start(get_command_line_arguments());
 }
 
 void Debug_Window::on_stop_button_clicked() {
     toggle_start_and_stop_buttons(false);
-    toggle_cmd_line_arg_editable(true);
     emit stop();
 }
 
@@ -57,15 +57,6 @@ void Debug_Window::toggle_start_and_stop_buttons(bool start_clicked) {
     //disabling the button you clicked or re-enabling the one you didn't click
     ui->start_button->setDisabled(start_clicked);
     ui->stop_button->setDisabled(!start_clicked);
-}
-
-void Debug_Window::toggle_cmd_line_arg_editable(bool editable) {
-    for(auto i = 0; i < ui->table_widget->rowCount(); i++) {
-        QTableWidgetItem *item = ui->table_widget->item(i, COMMAND_LINE_ARGS);
-
-        if(editable) item->setFlags(default_command_line_arg_flags);
-        else item->setFlags(Qt::ItemIsEnabled);
-    }
 }
 
 QVector<QString> Debug_Window::get_command_line_arguments() {

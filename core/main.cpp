@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     int length_of_legal_option = equal_length_options.first().length(); //get length of first option
     for(auto i:equal_length_options) {
         if(length_of_legal_option != i.length()) {
-            qDebug() << "usage: application_name, application_ports, and application_scripts must all have an equal number of options";
+            qDebug() << "usage: application_name, application_ports, application_scripts, and command_line_arguments must all have an equal number of options";
             std::exit(EXIT_FAILURE);
         }
     }
@@ -89,9 +89,9 @@ int main(int argc, char *argv[])
     bool debug_window_set = parser.isSet(debug_window);
     bool client_mode_set = parser.isSet(client_mode);
 
-    qDebug() << application_names << application_ports << application_scripts << client_hostname << client_port_number << client_mode_set << debug_window_set;
+    qDebug() << application_names << application_ports << application_scripts << command_line_arguments << client_hostname << client_port_number << client_mode_set << debug_window_set;
 
-    Shadow w(application_names, application_scripts, application_ports, client_hostname, client_port_number, client_mode_set, debug_window_set);
+    Shadow w(application_names, application_scripts, application_ports, command_line_arguments, client_hostname, client_port_number, client_mode_set, debug_window_set);
 
     return app.exec();
 }
