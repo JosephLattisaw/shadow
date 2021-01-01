@@ -2,11 +2,12 @@
 #include <QThread>
 #include <cassert>
 
-Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QString client_hostname, uint16_t client_port, bool client_mode, bool debug_window, QObject *parent) :
+Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QStringList cl_args, QString client_hostname, uint16_t client_port, bool client_mode, bool debug_window, QObject *parent) :
     QObject (parent),
     application_names(app_names),
     application_scripts(app_scripts),
     application_ports(app_ports),
+    command_line_arguments(cl_args),
     debug_window_is_set(debug_window),
     _client_hostname(client_hostname),
     _client_port(client_port),
@@ -14,7 +15,7 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
 {
     //sanity checks
     assert(app_names.length() > 0);
-    assert(app_names.length() == app_scripts.length() && app_names.length() == app_ports.length());
+    assert(app_names.length() == app_scripts.length() && app_names.length() == app_ports.length() && app_names.length() == cl_args.length());
 
     process_statuses.resize(app_names.size()); //resizes our status table to this size
 

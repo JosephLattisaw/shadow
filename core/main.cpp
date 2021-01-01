@@ -25,6 +25,9 @@ int main(int argc, char *argv[])
     QCommandLineOption application_script(QStringList() << "s" << "application_script",
                                   "script needed to execute application", "app_script");
 
+    QCommandLineOption command_line_argument(QStringList() << "c" << "command_line_arguments",
+                                            "Command Line Arguments for Applications to be automatically executed", "args");
+
     QCommandLineOption debug_window(QStringList() << "debug_window",
                                     "If this is set we display a debug window gui when running shadow");
 
@@ -41,6 +44,7 @@ int main(int argc, char *argv[])
         application_name,
         application_port,
         application_script,
+        command_line_argument,
         debug_window,
         client_mode,
         client_host,
@@ -55,6 +59,7 @@ int main(int argc, char *argv[])
     QStringList application_names = parser.values(application_name);
     QStringList application_ports = parser.values(application_port);
     QStringList application_scripts = parser.values(application_script);
+    QStringList command_line_arguments = parser.values(command_line_argument);
     QString client_hostname = parser.isSet(client_host) ? parser.value(client_host) : client_host.defaultValues().first();
     std::uint16_t client_port_number = parser.isSet(client_port) ? parser.value(client_port).toUShort() : client_port.defaultValues().first().toUShort();
 
@@ -63,7 +68,8 @@ int main(int argc, char *argv[])
     QList<QStringList> equal_length_options = {
         application_names,
         application_ports,
-        application_scripts
+        application_scripts,
+        command_line_arguments
     };
 
     int length_of_legal_option = equal_length_options.first().length(); //get length of first option

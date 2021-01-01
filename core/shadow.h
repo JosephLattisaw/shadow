@@ -14,7 +14,7 @@ class Shadow : public QObject
     Q_OBJECT
 
 public:
-    explicit Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QString client_hostname, std::uint16_t client_port, bool client_mode = false, bool debug_window = false, QObject *parent = nullptr);
+    explicit Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QStringList cl_args, QString client_hostname, std::uint16_t client_port, bool client_mode = false, bool debug_window = false, QObject *parent = nullptr);
     ~Shadow();
 
 signals:
@@ -55,6 +55,7 @@ private:
     QStringList application_names;
     QStringList application_scripts;
     QStringList application_ports;
+    QStringList command_line_arguments;
 
 
     bool _client_mode;
