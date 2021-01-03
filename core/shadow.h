@@ -27,14 +27,13 @@ signals:
     void start_client_processes();
     void stop_client_processes();
 
+    void update_client_status(QVector<QString> client_app_names, QVector<QString> client_app_clas, QVector<shadow::APP_STATUS> client_app_status);
     void update_process_status_table(QVector<shadow::APP_STATUS> statuses);
 
 private slots:
     //signals from debug gui functions to start and stop processes
-    void start_all(QVector<QString> command_line_arguments);
     void start_all();
     void stop_all();
-    void client_stop_all();
 
     //signals from process telling us the current state of our processes
     void process_action_handler(int id, shadow::APP_STATUS status);
@@ -42,6 +41,8 @@ private slots:
     void process_failed_to_start(int id);
     void process_started(int id);
     void process_stopped(int id);
+
+    void client_status_update(QVector<QString> client_app_names, QVector<QString> client_app_clas, QVector<shadow::APP_STATUS> client_p_stats);
 
 private:
     void create_processes();
@@ -56,6 +57,9 @@ private:
     QStringList application_scripts;
     QStringList application_ports;
     QStringList command_line_arguments;
+    QVector<QString> client_application_names;
+    QVector<QString> client_command_line_arguments;
+    QVector<shadow::APP_STATUS> client_process_statuses;
 
 
     bool _client_mode;

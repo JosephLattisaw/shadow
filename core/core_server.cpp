@@ -1,10 +1,11 @@
 #include "core_server.h"
 #include "core_tcp_message_types.hpp"
+#include "defines.hpp"
 
 namespace  {
-    const QHostAddress::SpecialAddress CLIENT_HOSTNAME = QHostAddress::Any;
-    const int KEEP_ALIVE_SEND_PACKET_TIMEOUT_MSECS = 1000;
-    const int KEEP_ALIVE_RECEIVE_PACKET_TIMEOUT_MSECS = 20000;
+const QHostAddress::SpecialAddress CLIENT_HOSTNAME = QHostAddress::Any;
+const int KEEP_ALIVE_SEND_PACKET_TIMEOUT_MSECS = 1000;
+const int KEEP_ALIVE_RECEIVE_PACKET_TIMEOUT_MSECS = 20000;
 }
 
 Core_Server::Core_Server(uint16_t port, QObject *parent)
@@ -74,9 +75,65 @@ void Core_Server::ready_read() {
 
             if(hdr->packet_size == data_buffer.size()) {
                 switch (hdr->message_type) {
-                    case core::header::MESSAGE_TYPE::KEEP_ALIVE: //received keep alive packet
+                case core::header::MESSAGE_TYPE::KEEP_ALIVE: //received keep alive packet
                     keep_alive_receive_timer->stop(); //stopping the receive timer
                     keep_alive_receive_timer->start(KEEP_ALIVE_RECEIVE_PACKET_TIMEOUT_MSECS); //starting the receive timer
+                    break;
+                case core::header::MESSAGE_TYPE::STATUS:
+                {
+                    int size = 0;
+                    core::status_message sm;
+
+                    //getting the status message
+                    memcpy(&sm, data_buffer.mid(size, sizeof(core::status_message)).data(), sizeof (sm));
+                    size += sizeof(core::status_message);
+
+                    //getting application name sizes
+                    std::uint32_t app_name_sizes[sm.app_name_size];
+                    memcpy(&app_name_sizes, data_buffer.mid(size, sm.app_name_size).data(), sm.app_name_size);
+                    size += sm.app_name_size;
+
+
+                    //getting the total number of elements
+                    int nbr_elements = (sm.app_name_size / sizeof (app_name_sizes[0])) / sizeof (app_name_sizes[0]);
+
+                    //Getting the client application names
+                    QVector<QString> client_app_names;
+                    for (auto i = 0; i < nbr_elements; i++) {
+                        client_app_names.push_back(QString::fromUtf8(data_buffer.mid(size, app_name_sizes[i])));
+                        size += app_name_sizes[i];
+                    }
+
+                    //gettings cla name sizes
+                    std::uint32_t cla_sizes[sm.cla_size];
+                    memcpy(&cla_sizes, data_buffer.mid(size, sm.cla_size).data(), sm.cla_size);
+                    size += sm.cla_size;
+
+                    //getting the total number of elements
+                    nbr_elements = (sm.cla_size / sizeof (cla_sizes[0])) / sizeof (cla_sizes[0]);
+
+                    //Getting the client application names
+                    QVector<QString> client_app_clas;
+                    for (auto i = 0; i < nbr_elements; i++) {
+                        client_app_clas.push_back(QString::fromUtf8(data_buffer.mid(size, cla_sizes[i])));
+                        size += cla_sizes[i];
+                    }
+
+                    //getting process sizes
+                    std::uint32_t p_sizes[sm.status_size];
+                    memcpy(&p_sizes, data_buffer.mid(size, sm.status_size).data(), sm.status_size);
+                    size += sm.status_size;
+
+                    //getting the total number of elements
+                    nbr_elements = (sm.status_size / sizeof (p_sizes[0])) / sizeof (p_sizes[0]);
+
+                    QVector<shadow::APP_STATUS> statuses;
+                    for(auto i = 0; i < nbr_elements; i++) {
+                        statuses.push_back(static_cast<shadow::APP_STATUS>(p_sizes[i]));
+                    }
+
+                    emit client_status_update(client_app_names, client_app_clas, statuses);
+                }
                     break;
                 default:
                     qDebug() << "received unknown packet type, kicking off server";
@@ -100,6 +157,7 @@ void Core_Server::close_socket() {
     }
 
     clear_buffers();
+    emit disconnected_from_client();
     listen_for_connections(); //start listening for new connections
 }
 

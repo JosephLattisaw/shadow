@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QTimer>
+#include "defines.hpp"
 
 class Core_Server : public QObject
 {
@@ -13,6 +14,8 @@ public:
     explicit Core_Server(std::uint16_t port, QObject *parent = nullptr);
 
 signals:
+    void client_status_update(QVector<QString> client_app_names, QVector<QString> client_app_clas, QVector<shadow::APP_STATUS> statuses);
+    void disconnected_from_client();
 
 public slots:
     void start_client_processes();

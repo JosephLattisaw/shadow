@@ -45,7 +45,7 @@ void Debug_Window::set_application_data(QStringList app_names, QStringList comma
 
 void Debug_Window::on_start_button_clicked() {
     toggle_start_and_stop_buttons(true);
-    emit start(get_command_line_arguments());
+    emit start();
 }
 
 void Debug_Window::on_stop_button_clicked() {
@@ -59,26 +59,16 @@ void Debug_Window::toggle_start_and_stop_buttons(bool start_clicked) {
     ui->stop_button->setDisabled(!start_clicked);
 }
 
-QVector<QString> Debug_Window::get_command_line_arguments() {
-    QVector<QString> result;
-
-    for(auto i = 0; i < ui->table_widget->rowCount(); i++) {
-        QTableWidgetItem *item = ui->table_widget->item(i, COMMAND_LINE_ARGS);
-
-        result.push_back(item->text());
-    }
-
-    return result;
-}
-
 void Debug_Window::set_process_status_table(QVector<shadow::APP_STATUS> statuses) {
     process_statuses = statuses;
-    assert(statuses.size() == ui->table_widget->rowCount());
+    update_process_status_table(statuses, 0);
+}
 
-    for(auto i = 0; i < process_statuses.size(); i++) {
-        QTableWidgetItem *status_item = ui->table_widget->item(i, STATUS_NAME);
+void Debug_Window::update_process_status_table(QVector<shadow::APP_STATUS> statuses, int starting_index) {
+    for(auto i = 0; i < statuses.size(); i++) {
+        QTableWidgetItem *status_item = ui->table_widget->item(i + starting_index, STATUS_NAME);
         if(status_item != nullptr) {
-            switch (process_statuses[i]) {
+            switch (statuses[i]) {
             case shadow::APP_STATUS::NOT_RUNNING:
                 status_item->setText(DEFAULT_STATUS_TEXT);
                 status_item->setBackgroundColor(Qt::white);
@@ -100,4 +90,39 @@ void Debug_Window::set_process_status_table(QVector<shadow::APP_STATUS> statuses
             }
         }
     }
+}
+
+void Debug_Window::update_client_status(QVector<QString> client_app_names, QVector<QString> client_app_clas, QVector<shadow::APP_STATUS> client_app_status) {
+    if(ui->table_widget->rowCount() != (_app_names.size() + client_app_names.size())) {
+        assert(client_app_clas.size() == client_app_names.size()); //sanity check
+        _client_app_names = client_app_names;
+        _client_command_line_arguments = client_app_clas;
+
+        for(auto i = 0; i < _client_app_names.size(); i++) {
+            QTableWidgetItem *app_name_item = new QTableWidgetItem(_client_app_names[i]);
+            QTableWidgetItem *status_name_item = new QTableWidgetItem(DEFAULT_STATUS_TEXT);
+            QTableWidgetItem *command_line_args_item = new QTableWidgetItem(_client_command_line_arguments[i]);
+
+            app_name_item->setFlags(Qt::ItemIsEnabled);
+            status_name_item->setFlags(Qt::ItemIsEnabled);
+            command_line_args_item->setFlags(Qt::ItemIsEnabled);
+
+            ui->table_widget->insertRow(ui->table_widget->rowCount());
+            ui->table_widget->setItem(ui->table_widget->rowCount() - 1, APPLICATION_NAME, app_name_item);
+            ui->table_widget->setItem(ui->table_widget->rowCount() - 1, STATUS_NAME, status_name_item);
+            ui->table_widget->setItem(ui->table_widget->rowCount() - 1, COMMAND_LINE_ARGS, command_line_args_item);
+        }
+    }
+
+    update_process_status_table(client_app_status, process_statuses.size());
+}
+
+void Debug_Window::disconnected_from_client() {
+    while(ui->table_widget->rowCount() != _app_names.size()) {
+        ui->table_widget->removeRow(ui->table_widget->rowCount() - 1);
+    }
+
+    _client_app_names.clear();
+    _client_command_line_arguments.clear();
+    _client_process_statuses.clear();
 }
