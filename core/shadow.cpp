@@ -2,16 +2,23 @@
 #include <QThread>
 #include <cassert>
 
-Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, bool debug_window, QObject *parent) :
+Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_ports, QStringList cl_args, QString client_hostname, uint16_t client_port, bool client_mode, bool debug_window, QObject *parent) :
     QObject (parent),
     application_names(app_names),
     application_scripts(app_scripts),
     application_ports(app_ports),
-    debug_window_is_set(debug_window)
+    command_line_arguments(cl_args),
+    debug_window_is_set(debug_window),
+    _client_hostname(client_hostname),
+    _client_port(client_port),
+    _client_mode(client_mode)
 {
     //sanity checks
     assert(app_names.length() > 0);
-    assert(app_names.length() == app_scripts.length() && app_names.length() == app_ports.length());
+    assert(app_names.length() == app_scripts.length() && app_names.length() == app_ports.length() && app_names.length() == cl_args.length());
+
+    qRegisterMetaType<QVector<QString>>("QVector<QString>");
+    qRegisterMetaType<QVector<shadow::APP_STATUS>>("QVector<shadow::APP_STATUS>");
 
     process_statuses.resize(app_names.size()); //resizes our status table to this size
 
@@ -19,13 +26,35 @@ Shadow::Shadow(QStringList app_names, QStringList app_scripts, QStringList app_p
 
     if(debug_window_is_set) {
         _debug_window = new Debug_Window;
-        _debug_window->set_application_names(application_names);
+        _debug_window->set_application_data(application_names, command_line_arguments);
 
         _debug_window->show();
 
-        connect(_debug_window, SIGNAL(start(QVector<QString>)), this, SLOT(start_all(QVector<QString>))); //starting all processes
+        connect(_debug_window, SIGNAL(start()), this, SLOT(start_all())); //starting all processes
         connect(_debug_window, SIGNAL(stop()), this, SLOT(stop_all())); //stopping all processes
         connect(this, SIGNAL(update_process_status_table(QVector<shadow::APP_STATUS>)), _debug_window, SLOT(set_process_status_table(QVector<shadow::APP_STATUS>)));
+        connect(this, SIGNAL(update_client_status(QVector<QString>,QVector<QString>,QVector<shadow::APP_STATUS>)), _debug_window, SLOT(update_client_status(QVector<QString>,QVector<QString>,QVector<shadow::APP_STATUS>)));
+    }
+
+    if(!client_mode) {
+        //created a server if we aren't in client mode
+        core_server = new Core_Server(_client_port);
+        core_server_thread = new QThread;
+        move_object_to_thread(core_server, core_server_thread);
+        connect(this, SIGNAL(start_client_processes()), core_server, SLOT(start_client_processes()));
+        connect(this, SIGNAL(stop_client_processes()), core_server, SLOT(stop_client_processes()));
+        connect(core_server, SIGNAL(client_status_update(QVector<QString>,QVector<QString>,QVector<shadow::APP_STATUS>)), this, SLOT(client_status_update(QVector<QString>,QVector<QString>,QVector<shadow::APP_STATUS>)));
+        if(debug_window_is_set) connect(core_server, SIGNAL(disconnected_from_client()), _debug_window, SLOT(disconnected_from_client()));
+    }
+    else {
+        core_client = new Core_Client(_client_hostname, _client_port);
+        core_client->set_application_data(application_names, command_line_arguments);
+
+        core_client_thread = new QThread;
+        move_object_to_thread(core_client, core_client_thread);
+        connect(core_client, SIGNAL(start_all()), this, SLOT(start_all()));
+        connect(core_client, SIGNAL(stop_all()), this, SLOT(stop_all()));
+        connect(this, SIGNAL(update_process_status_table(QVector<shadow::APP_STATUS>)), core_client, SLOT(set_process_status_table(QVector<shadow::APP_STATUS>)));
     }
 
     emit start_threads();
@@ -68,8 +97,9 @@ void Shadow::move_object_to_thread(QObject *object, QThread *thread) {
     connect(thread, SIGNAL(finished()), object, SLOT(deleteLater()));
 }
 
-void Shadow::start_all(QVector<QString> command_line_arguments) {
+void Shadow::start_all() {
     emit start_process(0, command_line_arguments.at(0));
+    if(!_client_mode) emit start_client_processes();
 }
 
 void Shadow::stop_all() {
@@ -79,6 +109,7 @@ void Shadow::stop_all() {
     }
 
     update_process_status_table(process_statuses);
+    if(!_client_mode) emit stop_client_processes();
 }
 
 void Shadow::process_started(int id) {
@@ -102,4 +133,11 @@ void Shadow::process_action_handler(int id, shadow::APP_STATUS status) {
     process_statuses[id] = status;
 
     update_process_status_table(process_statuses);
+}
+
+void Shadow::client_status_update(QVector<QString> client_app_names, QVector<QString> client_app_clas, QVector<shadow::APP_STATUS> client_p_stats) {
+    client_application_names = client_app_names;
+    client_command_line_arguments = client_app_clas;
+    client_process_statuses = client_p_stats;
+    emit update_client_status(client_app_names, client_app_clas, client_p_stats);
 }

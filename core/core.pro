@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,13 +28,18 @@ SOURCES += \
         main.cpp \
         shadow.cpp \
     process.cpp \
-    debug_window.cpp
+    debug_window.cpp \
+    core_server.cpp \
+    core_client.cpp
 
 HEADERS += \
         shadow.h \
     defines.hpp \
     process.h \
-    debug_window.h
+    debug_window.h \
+    core_server.h \
+    core_client.h \
+    core_tcp_message_types.hpp
 
 FORMS += \
     debug_window.ui
